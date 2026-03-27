@@ -11,56 +11,29 @@ style guide before generating HTML. You never invent styles — you follow the s
 
 ## Repository Layout
 
-- `STYLE_GUIDE.md`   — visual design system, CSS variables, typography rules
-- `COMPONENTS.md`    — reusable HTML/CSS component patterns with examples
-- `guides/`          — one subdirectory per guide, each with index.html + meta.json
-- `index.html`       — auto-generated hub (never edit manually)
-- `scripts/build-index.js` — regenerates index.html from all meta.json files
+- `.claude/docs/STYLE_GUIDE.md` — visual design system, CSS variables, typography rules
+- `.claude/docs/COMPONENTS.md`  — reusable HTML/CSS component patterns with examples
+- `.claude/skills/`             — slash command workflows (newguide, publish, updateguide, listguides, previewguide)
+- `guides/`                     — one subdirectory per guide, each with index.html + meta.json
+- `index.html`                  — auto-generated hub (never edit manually)
+- `scripts/build-index.js`      — regenerates index.html from all meta.json files
 
 ---
 
-## Commands You Respond To
+## Slash Commands (Skills)
 
-### `/newguide`
-Start the guided workflow to create a new guide from scratch.
+All workflows are registered as Claude Code skills in `.claude/skills/`.
+Users invoke them as slash commands:
 
-Steps:
-1. Ask the user what they want a guide for (topic, audience, format)
-2. Produce a Guide Plan (title, slug, category, tags, description, format, sections)
-3. Present the plan and wait for confirmation — iterate until approved
-4. Read STYLE_GUIDE.md and COMPONENTS.md fully
-5. Generate the complete guide HTML and write to guides/[slug]/index.html
-6. Write guides/[slug]/meta.json with all metadata
-7. Open preview: `open guides/[slug]/index.html` (macOS) or `xdg-open` (Linux)
-8. Wait for user approval — iterate with changes if needed
-9. When approved, tell user to run /publish [slug]
+| Command | Description |
+|---------|-------------|
+| `/newguide [topic]` | Create a new guide from scratch |
+| `/publish <slug>` | Publish a guide to GitHub Pages |
+| `/updateguide <slug>` | Update an existing guide |
+| `/listguides` | List all guides with metadata |
+| `/previewguide <slug>` | Open a guide in the browser |
 
-### `/publish [slug]`
-Publish a guide to GitHub Pages.
-
-Steps:
-1. Verify guides/[slug]/index.html and meta.json exist and are valid
-2. Present a publish summary (files, commit message, live URL after deploy)
-3. Wait for explicit yes/no confirmation
-4. Run: node scripts/build-index.js
-5. Run: git add guides/[slug]/ index.html
-6. Run: git commit -m "feat(guide): add [title]"
-7. Run: git push origin main
-8. Report the live URL
-
-### `/updateguide [slug]`
-Update an existing guide.
-- Load the existing guide and meta.json
-- Ask what should change
-- Summarize changes, confirm, then update
-- Update the `updated` field in meta.json to today's date
-- Preview and offer to publish with commit message: fix(guide): update [title]
-
-### `/listguides`
-Scan guides/ and show a table of all guides with slug, title, status, and updated date.
-
-### `/previewguide [slug]`
-Open guides/[slug]/index.html in the browser immediately.
+Each skill's `SKILL.md` contains the full workflow steps.
 
 ---
 
@@ -101,7 +74,7 @@ Defined categories:
 
 ## HTML Generation Rules
 
-ALWAYS read STYLE_GUIDE.md and COMPONENTS.md before generating any HTML.
+ALWAYS read `.claude/docs/STYLE_GUIDE.md` and `.claude/docs/COMPONENTS.md` before generating any HTML.
 NEVER copy HTML from a previous guide — always generate fresh from the spec.
 NEVER reference external files within the repo (no ../shared/styles.css etc.)
 ALWAYS use Google Fonts CDN for fonts (single link tag in head)
@@ -109,20 +82,29 @@ ALWAYS include a working search if the guide has more than 15 items
 ALWAYS use <pre> tags (not <div>) for code blocks
 ALWAYS include meta description tag using the guide's description field
 ALWAYS set <title> to the guide title + " — DevGuides"
-ALWAYS include a back link to the index page in the guide header
+ALWAYS include a back link to the index page using relative path: `../../index.html`
 
 The HTML file must render correctly:
 - When opened directly via file:// (no server)
-- When served via GitHub Pages at https://[user].github.io/devguides/guides/[slug]/
+- When served via GitHub Pages at https://[user].github.io/devpages/guides/[slug]/
 
 ---
 
 ## Git Commit Message Format
 
-feat(guide): add [title]          ← new guide
-fix(guide): update [title]        ← updating existing guide
-chore(index): regenerate index    ← index-only update
-chore(style): update style guide  ← style system changes
+feat(guide): add [title]          <- new guide
+fix(guide): update [title]        <- updating existing guide
+chore(index): regenerate index    <- index-only update
+chore(style): update style guide  <- style system changes
+
+---
+
+## Git Workflow Rules
+
+- Never force push
+- One commit per publish — do not bundle unrelated changes
+- Always pull before push: `git pull --rebase origin main`
+- Never commit node_modules, .DS_Store, or other junk
 
 ---
 

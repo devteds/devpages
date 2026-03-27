@@ -24,18 +24,26 @@ DevPages helps you create, preview, and publish beautiful standalone HTML guide 
 ## Repository Structure
 
 ```
-├── CLAUDE.md            — Instructions for Claude Code
-├── STYLE_GUIDE.md       — Visual design system
-├── COMPONENTS.md        — Reusable HTML/CSS patterns
-├── index.html           — Auto-generated hub page
-├── guides/              — One folder per guide
+├── CLAUDE.md                    — Instructions for Claude Code
+├── index.html                   — Auto-generated hub page
+├── guides/                      — One folder per guide
 │   └── [slug]/
-│       ├── index.html   — The guide (standalone HTML)
-│       └── meta.json    — Guide metadata
+│       ├── index.html           — The guide (standalone HTML)
+│       └── meta.json            — Guide metadata
 ├── scripts/
-│   └── build-index.js   — Regenerates index.html
+│   └── build-index.js           — Regenerates index.html
+├── .claude/
+│   ├── docs/
+│   │   ├── STYLE_GUIDE.md      — Visual design system
+│   │   └── COMPONENTS.md       — Reusable HTML/CSS patterns
+│   └── skills/                  — Slash command workflows
+│       ├── newguide/
+│       ├── publish/
+│       ├── updateguide/
+│       ├── listguides/
+│       └── previewguide/
 └── .github/workflows/
-    └── pages.yml        — GitHub Pages deployment
+    └── pages.yml                — GitHub Pages deployment
 ```
 
 ## Setup
