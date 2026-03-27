@@ -1,0 +1,10 @@
+{
+  "title": "Tmux + Claude Code CLI Cheatsheet",
+  "slug": "tmux-claude-cli",
+  "description": "Quick-reference cheatsheet for tmux and Claude Code CLI — shortcuts, commands, and multi-session workflows.",
+  "tags": ["tmux", "claude-code", "cli", "terminal", "multiplexer", "ai"],
+  "category": "Developer Tools",
+  "created": "2026-03-27",
+  "updated": "2026-03-27",
+  "author": "DevGuides"
+}

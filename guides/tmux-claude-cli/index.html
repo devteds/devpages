@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Quick-reference cheatsheet for tmux and Claude Code CLI — shortcuts, commands, and multi-session workflows." />
+<title>Tmux + Claude Code CLI Cheatsheet — DevGuides</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg:        #080b10;
+  --surface:   #0e1219;
+  --surface2:  #141920;
+  --border:    #1c2333;
+  --border2:   #243040;
+  --accent-purple: #7c6af7;
+  --accent-green:  #38d9a9;
+  --accent-orange: #f7a94a;
+  --accent-red:    #f06a6a;
+  --text:  #d8dde8;
+  --muted: #5a6480;
+  --syn-comment:  #2e3f55;
+  --syn-command:  #38d9a9;
+  --syn-flag:     #7c6af7;
+  --syn-string:   #f7a94a;
+  --syn-text:     #8a90a8;
+  --mono:    'IBM Plex Mono', monospace;
+  --sans:    'Inter', sans-serif;
+  --display: 'Syne', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.04) 2px,
+    rgba(0,0,0,0.04) 4px
+  );
+  pointer-events: none;
+  z-index: 1000;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,106,247,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,106,247,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
+header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.back-link {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.back-link:hover { color: var(--text); }
+
+.pill-row { display: flex; align-items: center; gap: 0.6rem; margin: 1.2rem 0 0.5rem; }
+
+.pill {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid;
+}
+.pill-purple { border-color: var(--accent-purple); color: var(--accent-purple); background: rgba(124,106,247,0.08); }
+.pill-green  { border-color: var(--accent-green);  color: var(--accent-green);  background: rgba(56,217,169,0.08); }
+
+.separator { color: var(--muted); font-family: var(--mono); font-size: 0.75rem; }
+
+h1 {
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0.75rem 0 0.5rem;
+}
+h1 .purple { color: var(--accent-purple); }
+h1 .green  { color: var(--accent-green); }
+h1 .muted  { color: var(--muted); }
+
+.byline {
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.legend-item { display: flex; align-items: center; gap: 0.4rem; }
+.legend-dot  { width: 6px; height: 6px; border-radius: 50%; }
+
+/* Search */
+.search-wrap { position: relative; margin-bottom: 2rem; }
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+  font-family: var(--mono);
+}
+
+#search {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 0.85rem 1rem 0.85rem 2.8rem;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+#search::placeholder { color: var(--muted); }
+#search:focus { border-color: var(--accent-purple); }
+
+.search-count {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.highlight-match {
+  background: rgba(247,169,74,0.25);
+  color: var(--accent-orange);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* Sections */
+.section { margin-bottom: 2rem; }
+.section { animation: fadeUp 0.4s ease both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.section:nth-child(1) { animation-delay: 0.05s; }
+.section:nth-child(2) { animation-delay: 0.10s; }
+.section:nth-child(3) { animation-delay: 0.15s; }
+.section:nth-child(4) { animation-delay: 0.20s; }
+.section:nth-child(5) { animation-delay: 0.25s; }
+.section:nth-child(6) { animation-delay: 0.30s; }
+.section:nth-child(7) { animation-delay: 0.35s; }
+.section:nth-child(8) { animation-delay: 0.40s; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-purple { background: var(--accent-purple); box-shadow: 0 0 8px var(--accent-purple); }
+.dot-green  { background: var(--accent-green);  box-shadow: 0 0 8px var(--accent-green); }
+.dot-orange { background: var(--accent-orange); box-shadow: 0 0 8px var(--accent-orange); }
+
+.section-title {
+  font-family: var(--display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.section-title.purple { color: var(--accent-purple); }
+.section-title.green  { color: var(--accent-green); }
+.section-title.orange { color: var(--accent-orange); }
+
+.section-desc {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  margin-left: auto;
+}
+
+/* Cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card {
+  background: var(--surface);
+  padding: 1.1rem 1.3rem;
+  transition: background 0.15s;
+}
+.card:hover { background: var(--surface2); }
+.card.full { grid-column: 1 / -1; }
+
+.card-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+
+/* Command rows */
+.cmd-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.cmd-row:last-child { border-bottom: none; }
+.cmd-row.hidden { display: none; }
+
+kbd {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: #fff;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-bottom: 2px solid var(--border2);
+  padding: 0.15rem 0.5rem;
+  border-radius: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+kbd.purple { border-color: rgba(124,106,247,0.4); border-bottom-color: var(--accent-purple); color: #c4bdff; }
+kbd.green  { border-color: rgba(56,217,169,0.3);  border-bottom-color: var(--accent-green);  color: #7eecd4; }
+kbd.orange { border-color: rgba(247,169,74,0.3);  border-bottom-color: var(--accent-orange); color: #fcd49a; }
+
+.cmd-desc {
+  font-size: 0.8rem;
+  color: #8a90a8;
+  text-align: right;
+  flex: 1;
+  line-height: 1.4;
+}
+.cmd-desc em {
+  font-style: normal;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Code blocks */
+.code-block {
+  background: #050709;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.8;
+  overflow-x: auto;
+  margin-top: 0.5rem;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.syn-comment { color: var(--syn-comment); }
+.syn-command { color: var(--syn-command); }
+.syn-flag    { color: var(--syn-flag); }
+.syn-string  { color: var(--syn-string); }
+.syn-text    { color: var(--syn-text); }
+
+/* Terminal visualization */
+.terminal-viz {
+  background: #0a0c14;
+  border: 1px solid #1e2235;
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin: 1rem 0;
+}
+.terminal-bar { display: flex; gap: 6px; margin-bottom: 1rem; }
+.tdot { width: 10px; height: 10px; border-radius: 50%; }
+.tdot-r { background: #ff5f56; }
+.tdot-y { background: #ffbd2e; }
+.tdot-g { background: #27c93f; }
+
+.term-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.term-pane {
+  background: #0f1117;
+  border: 1px solid #1e2235;
+  border-radius: 4px;
+  padding: 0.5rem 0.6rem;
+  min-height: 60px;
+}
+.term-pane.wide { grid-column: span 2; }
+.term-label  { color: var(--accent-green); font-weight: 700; font-size: 0.7rem; margin-bottom: 0.3rem; }
+.term-line   { color: #4a5178; }
+.term-active { color: #a8c0ff; }
+.term-cursor {
+  display: inline-block;
+  width: 7px; height: 12px;
+  background: var(--accent-purple);
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Callout */
+.callout {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin: 0.8rem 0;
+}
+.callout-green  { background: rgba(56,217,169,0.08);  border: 1px solid rgba(56,217,169,0.2);  color: #9ee8d4; }
+.callout-orange { background: rgba(247,169,74,0.08);  border: 1px solid rgba(247,169,74,0.2);  color: #fcd49a; }
+.callout-purple { background: rgba(124,106,247,0.08); border: 1px solid rgba(124,106,247,0.2); color: #c4bdff; }
+.callout-icon   { flex-shrink: 0; font-size: 0.9rem; }
+.callout code   { font-family: var(--mono); font-size: 0.8rem; }
+
+/* Tabs */
+.tabs { display: flex; gap: 0.4rem; margin-bottom: 2rem; flex-wrap: wrap; }
+
+.tab {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+.tab:hover { color: var(--text); }
+.tab.active-purple { border-color: var(--accent-purple); color: var(--accent-purple); background: rgba(124,106,247,0.1); }
+.tab.active-green  { border-color: var(--accent-green);  color: var(--accent-green);  background: rgba(56,217,169,0.1); }
+.tab.active-orange { border-color: var(--accent-orange); color: var(--accent-orange); background: rgba(247,169,74,0.08); }
+
+.section.section-hidden { display: none; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .cards { grid-template-columns: 1fr; }
+  .term-grid { grid-template-columns: 1fr; }
+  .term-pane.wide { grid-column: span 1; }
+  .section-desc { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Header -->
+<header>
+  <div class="logo-row">
+    <a class="back-link" href="../../index.html">&larr; DevGuides</a>
+  </div>
+  <div class="pill-row">
+    <span class="pill pill-purple">tmux</span>
+    <span class="separator">&times;</span>
+    <span class="pill pill-green">claude code cli</span>
+  </div>
+  <h1><span class="purple">tmux</span> <span class="muted">&times;</span> <span class="green">Claude Code</span><br>Cheatsheet</h1>
+  <p class="byline">// multi-project &middot; multi-session &middot; multi-agent</p>
+</header>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active-orange" data-filter="all">All</button>
+  <button class="tab" data-filter="tmux">tmux</button>
+  <button class="tab" data-filter="claude">Claude CLI</button>
+  <button class="tab" data-filter="both">Combined</button>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--accent-purple)"></div>
+    tmux shortcut
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--accent-green)"></div>
+    claude cli command
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--accent-orange)"></div>
+    combined workflow
+  </div>
+</div>
+
+<!-- Search -->
+<div class="search-wrap">
+  <span class="search-icon">&#x2315;</span>
+  <input id="search" type="text" placeholder="Search commands..." autocomplete="off" />
+  <span class="search-count" id="search-count"></span>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: Tmux Essentials -->
+<!-- ============================================================ -->
+<div class="section" data-layer="tmux">
+  <div class="section-header">
+    <div class="section-dot dot-purple"></div>
+    <span class="section-title purple">TMUX &mdash; ESSENTIALS</span>
+    <span class="section-desc">// prefix key, session lifecycle, attach/detach</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Prefix Key</div>
+      <div class="cmd-row" data-tags="prefix control b shortcut">
+        <kbd class="purple">Ctrl-b</kbd>
+        <span class="cmd-desc"><em>Default prefix</em> &mdash; press before any tmux shortcut</span>
+      </div>
+      <div class="cmd-row" data-tags="prefix remap control a">
+        <kbd class="purple">Ctrl-a</kbd>
+        <span class="cmd-desc">Common remap &mdash; add <em>set -g prefix C-a</em> to .tmux.conf</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Session Lifecycle</div>
+      <div class="cmd-row" data-tags="new session create start">
+        <kbd class="purple">tmux new -s name</kbd>
+        <span class="cmd-desc">Create a <em>named session</em></span>
+      </div>
+      <div class="cmd-row" data-tags="detach leave session background">
+        <kbd class="purple">prefix d</kbd>
+        <span class="cmd-desc">Detach &mdash; <em>session keeps running</em></span>
+      </div>
+      <div class="cmd-row" data-tags="attach reconnect session">
+        <kbd class="purple">tmux attach -t name</kbd>
+        <span class="cmd-desc">Reattach to a <em>named session</em></span>
+      </div>
+      <div class="cmd-row" data-tags="attach last session">
+        <kbd class="purple">tmux a</kbd>
+        <span class="cmd-desc">Attach to <em>last session</em></span>
+      </div>
+      <div class="cmd-row" data-tags="list sessions ls">
+        <kbd class="purple">tmux ls</kbd>
+        <span class="cmd-desc">List all <em>active sessions</em></span>
+      </div>
+      <div class="cmd-row" data-tags="kill destroy session end">
+        <kbd class="purple">tmux kill-session -t name</kbd>
+        <span class="cmd-desc">Kill a specific <em>session</em></span>
+      </div>
+      <div class="cmd-row" data-tags="kill server all sessions destroy">
+        <kbd class="purple">tmux kill-server</kbd>
+        <span class="cmd-desc">Kill tmux server &mdash; <em>destroys all sessions</em></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: Window Management -->
+<!-- ============================================================ -->
+<div class="section" data-layer="tmux">
+  <div class="section-header">
+    <div class="section-dot dot-purple"></div>
+    <span class="section-title purple">TMUX &mdash; WINDOW MANAGEMENT</span>
+    <span class="section-desc">// create, switch, rename, close</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Create &amp; Close</div>
+      <div class="cmd-row" data-tags="new window create tab">
+        <kbd class="purple">prefix c</kbd>
+        <span class="cmd-desc">Create a <em>new window</em></span>
+      </div>
+      <div class="cmd-row" data-tags="close window kill destroy">
+        <kbd class="purple">prefix &amp;</kbd>
+        <span class="cmd-desc">Close current <em>window</em> (confirm)</span>
+      </div>
+      <div class="cmd-row" data-tags="rename window name">
+        <kbd class="purple">prefix ,</kbd>
+        <span class="cmd-desc"><em>Rename</em> current window</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Switch Windows</div>
+      <div class="cmd-row" data-tags="next window switch forward">
+        <kbd class="purple">prefix n</kbd>
+        <span class="cmd-desc"><em>Next</em> window</span>
+      </div>
+      <div class="cmd-row" data-tags="previous window switch back">
+        <kbd class="purple">prefix p</kbd>
+        <span class="cmd-desc"><em>Previous</em> window</span>
+      </div>
+      <div class="cmd-row" data-tags="number window switch jump goto">
+        <kbd class="purple">prefix 0-9</kbd>
+        <span class="cmd-desc">Jump to window by <em>number</em></span>
+      </div>
+      <div class="cmd-row" data-tags="last window switch toggle recent">
+        <kbd class="purple">prefix l</kbd>
+        <span class="cmd-desc">Toggle to <em>last active</em> window</span>
+      </div>
+      <div class="cmd-row" data-tags="list windows choose pick select">
+        <kbd class="purple">prefix w</kbd>
+        <span class="cmd-desc">List all windows &mdash; <em>interactive picker</em></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: Pane Management -->
+<!-- ============================================================ -->
+<div class="section" data-layer="tmux">
+  <div class="section-header">
+    <div class="section-dot dot-purple"></div>
+    <span class="section-title purple">TMUX &mdash; PANE MANAGEMENT</span>
+    <span class="section-desc">// split, navigate, resize, zoom</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Split &amp; Close</div>
+      <div class="cmd-row" data-tags="split horizontal pane divide">
+        <kbd class="purple">prefix %</kbd>
+        <span class="cmd-desc">Split pane <em>vertically</em> (left/right)</span>
+      </div>
+      <div class="cmd-row" data-tags="split vertical pane divide">
+        <kbd class="purple">prefix &quot;</kbd>
+        <span class="cmd-desc">Split pane <em>horizontally</em> (top/bottom)</span>
+      </div>
+      <div class="cmd-row" data-tags="close pane kill exit">
+        <kbd class="purple">prefix x</kbd>
+        <span class="cmd-desc">Close current <em>pane</em> (confirm)</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Navigate &amp; Resize</div>
+      <div class="cmd-row" data-tags="navigate pane move arrow direction">
+        <kbd class="purple">prefix &#x2190;&#x2191;&#x2192;&#x2193;</kbd>
+        <span class="cmd-desc">Move to <em>adjacent pane</em></span>
+      </div>
+      <div class="cmd-row" data-tags="cycle pane next switch">
+        <kbd class="purple">prefix o</kbd>
+        <span class="cmd-desc">Cycle to <em>next pane</em></span>
+      </div>
+      <div class="cmd-row" data-tags="zoom pane fullscreen maximize toggle">
+        <kbd class="purple">prefix z</kbd>
+        <span class="cmd-desc"><em>Zoom</em> toggle &mdash; fullscreen current pane</span>
+      </div>
+      <div class="cmd-row" data-tags="resize pane grow shrink">
+        <kbd class="purple">prefix Ctrl-&#x2190;&#x2191;&#x2192;&#x2193;</kbd>
+        <span class="cmd-desc"><em>Resize</em> pane in arrow direction</span>
+      </div>
+      <div class="cmd-row" data-tags="layout pane arrange even">
+        <kbd class="purple">prefix Space</kbd>
+        <span class="cmd-desc">Cycle through <em>preset layouts</em></span>
+      </div>
+      <div class="cmd-row" data-tags="swap pane reorder move">
+        <kbd class="purple">prefix {  /  }</kbd>
+        <span class="cmd-desc"><em>Swap</em> pane with previous / next</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: Multi-Project Workflow -->
+<!-- ============================================================ -->
+<div class="section" data-layer="tmux">
+  <div class="section-header">
+    <div class="section-dot dot-purple"></div>
+    <span class="section-title purple">TMUX &mdash; MULTI-PROJECT WORKFLOW</span>
+    <span class="section-desc">// named sessions per project, session switching</span>
+  </div>
+  <div class="cards">
+    <div class="card full">
+      <div class="card-label">Session Per Project</div>
+      <div class="cmd-row" data-tags="project session create named">
+        <kbd class="purple">tmux new -s api -c ~/code/api</kbd>
+        <span class="cmd-desc">New session with <em>working directory</em></span>
+      </div>
+      <div class="cmd-row" data-tags="switch session project jump">
+        <kbd class="purple">prefix s</kbd>
+        <span class="cmd-desc">Interactive <em>session picker</em></span>
+      </div>
+      <div class="cmd-row" data-tags="switch session next cycle">
+        <kbd class="purple">prefix (  /  )</kbd>
+        <span class="cmd-desc">Switch to <em>previous / next</em> session</span>
+      </div>
+      <div class="cmd-row" data-tags="rename session project name">
+        <kbd class="purple">prefix $</kbd>
+        <span class="cmd-desc"><em>Rename</em> current session</span>
+      </div>
+    </div>
+    <div class="card full">
+      <div class="card-label">Recommended Layout</div>
+<pre class="code-block">
+<span class="syn-comment"># One session per project, named windows per concern</span>
+<span class="syn-command">tmux new -s</span> <span class="syn-string">api</span> <span class="syn-flag">-c</span> ~/code/api
+<span class="syn-command">tmux new -s</span> <span class="syn-string">frontend</span> <span class="syn-flag">-c</span> ~/code/frontend
+<span class="syn-command">tmux new -s</span> <span class="syn-string">infra</span> <span class="syn-flag">-c</span> ~/code/infra
+
+<span class="syn-comment"># Inside each session: window 0 = editor, window 1 = claude, window 2 = shell</span>
+<span class="syn-comment"># Switch projects: prefix s → pick session</span>
+<span class="syn-comment"># Switch concerns: prefix 0/1/2 → pick window</span>
+</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: Claude Code CLI Basics -->
+<!-- ============================================================ -->
+<div class="section" data-layer="claude">
+  <div class="section-header">
+    <div class="section-dot dot-green"></div>
+    <span class="section-title green">CLAUDE CODE &mdash; CLI BASICS</span>
+    <span class="section-desc">// launching, flags, core slash commands</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Launch &amp; Start</div>
+      <div class="cmd-row" data-tags="start launch claude interactive">
+        <kbd class="green">claude</kbd>
+        <span class="cmd-desc">Start <em>interactive session</em> in current directory</span>
+      </div>
+      <div class="cmd-row" data-tags="resume continue conversation last session">
+        <kbd class="green">claude --continue</kbd>
+        <span class="cmd-desc"><em>Resume</em> the last conversation</span>
+      </div>
+      <div class="cmd-row" data-tags="resume specific conversation id">
+        <kbd class="green">claude --resume &lt;id&gt;</kbd>
+        <span class="cmd-desc">Resume a <em>specific conversation</em> by ID</span>
+      </div>
+      <div class="cmd-row" data-tags="prompt inline one-shot pipe">
+        <kbd class="green">claude -p "prompt"</kbd>
+        <span class="cmd-desc"><em>One-shot</em> prompt &mdash; non-interactive, pipe-friendly</span>
+      </div>
+      <div class="cmd-row" data-tags="model select opus sonnet haiku">
+        <kbd class="green">claude --model opus</kbd>
+        <span class="cmd-desc">Start with a <em>specific model</em></span>
+      </div>
+      <div class="cmd-row" data-tags="version check update">
+        <kbd class="green">claude --version</kbd>
+        <span class="cmd-desc">Show <em>current version</em></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Key Slash Commands</div>
+      <div class="cmd-row" data-tags="help slash command list">
+        <kbd class="green">/help</kbd>
+        <span class="cmd-desc">Show all <em>available commands</em></span>
+      </div>
+      <div class="cmd-row" data-tags="clear context conversation reset">
+        <kbd class="green">/clear</kbd>
+        <span class="cmd-desc"><em>Clear</em> conversation context</span>
+      </div>
+      <div class="cmd-row" data-tags="compact summarize context compress">
+        <kbd class="green">/compact</kbd>
+        <span class="cmd-desc"><em>Compress</em> conversation to save context</span>
+      </div>
+      <div class="cmd-row" data-tags="model switch change opus sonnet haiku">
+        <kbd class="green">/model</kbd>
+        <span class="cmd-desc"><em>Switch model</em> mid-conversation</span>
+      </div>
+      <div class="cmd-row" data-tags="cost usage tokens billing">
+        <kbd class="green">/cost</kbd>
+        <span class="cmd-desc">Show <em>token usage</em> and cost</span>
+      </div>
+      <div class="cmd-row" data-tags="config settings permissions">
+        <kbd class="green">/config</kbd>
+        <span class="cmd-desc">Open <em>settings</em> configuration</span>
+      </div>
+      <div class="cmd-row" data-tags="vim mode terminal editor">
+        <kbd class="green">/vim</kbd>
+        <span class="cmd-desc">Toggle <em>vim keybindings</em></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: Claude Session Management -->
+<!-- ============================================================ -->
+<div class="section" data-layer="claude">
+  <div class="section-header">
+    <div class="section-dot dot-green"></div>
+    <span class="section-title green">CLAUDE CODE &mdash; SESSION MANAGEMENT</span>
+    <span class="section-desc">// multiple sessions, context, conversation control</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Multiple Sessions</div>
+      <div class="cmd-row" data-tags="multiple session parallel separate">
+        <kbd class="green">claude</kbd>
+        <span class="cmd-desc">Each terminal/pane runs an <em>independent session</em></span>
+      </div>
+      <div class="cmd-row" data-tags="continue resume last conversation">
+        <kbd class="green">claude -c</kbd>
+        <span class="cmd-desc">Short form &mdash; <em>continue</em> last conversation</span>
+      </div>
+      <div class="cmd-row" data-tags="list conversations history sessions">
+        <kbd class="green">claude --conversations</kbd>
+        <span class="cmd-desc">List <em>past conversations</em></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Context Control</div>
+      <div class="cmd-row" data-tags="add file context image read attach">
+        <kbd class="green">/add-file path</kbd>
+        <span class="cmd-desc">Add a <em>file or image</em> to context</span>
+      </div>
+      <div class="cmd-row" data-tags="run shell command terminal bang">
+        <kbd class="green">! command</kbd>
+        <span class="cmd-desc">Run a <em>shell command</em> in-session</span>
+      </div>
+      <div class="cmd-row" data-tags="memory recall remember project">
+        <kbd class="green">/memory</kbd>
+        <span class="cmd-desc">View and manage <em>saved memories</em></span>
+      </div>
+      <div class="cmd-row" data-tags="permission allow deny tool approve">
+        <kbd class="green">/permissions</kbd>
+        <span class="cmd-desc">Manage <em>tool permissions</em></span>
+      </div>
+    </div>
+    <div class="card full">
+      <div class="card-label">Keyboard Shortcuts</div>
+      <div class="cmd-row" data-tags="escape cancel stop abort interrupt">
+        <kbd class="green">Esc</kbd>
+        <span class="cmd-desc"><em>Cancel</em> current operation</span>
+      </div>
+      <div class="cmd-row" data-tags="tab autocomplete complete">
+        <kbd class="green">Tab</kbd>
+        <span class="cmd-desc"><em>Autocomplete</em> file paths and commands</span>
+      </div>
+      <div class="cmd-row" data-tags="up arrow history previous prompt">
+        <kbd class="green">Up Arrow</kbd>
+        <span class="cmd-desc">Cycle through <em>prompt history</em></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: Claude Agents & Tasks -->
+<!-- ============================================================ -->
+<div class="section" data-layer="claude">
+  <div class="section-header">
+    <div class="section-dot dot-green"></div>
+    <span class="section-title green">CLAUDE CODE &mdash; AGENTS &amp; TASKS</span>
+    <span class="section-desc">// background agents, task tracking, parallel work</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Subagents</div>
+      <div class="cmd-row" data-tags="agent subagent background spawn parallel delegate">
+        <kbd class="green">Agent tool</kbd>
+        <span class="cmd-desc">Claude spawns <em>subagents</em> for parallel tasks</span>
+      </div>
+      <div class="cmd-row" data-tags="agent worktree isolation branch git">
+        <kbd class="green">Agent (worktree)</kbd>
+        <span class="cmd-desc">Subagent in <em>isolated git worktree</em></span>
+      </div>
+      <div class="cmd-row" data-tags="agent background async notify">
+        <kbd class="green">Agent (background)</kbd>
+        <span class="cmd-desc">Run agent in <em>background</em> &mdash; notified on complete</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Headless &amp; Daemon Mode</div>
+      <div class="cmd-row" data-tags="headless non-interactive script pipe automation">
+        <kbd class="green">claude -p "task"</kbd>
+        <span class="cmd-desc"><em>Headless</em> &mdash; run task, output result, exit</span>
+      </div>
+      <div class="cmd-row" data-tags="pipe stdin stdout chain compose automation">
+        <kbd class="green">cat file | claude -p "review"</kbd>
+        <span class="cmd-desc"><em>Pipe</em> content in for processing</span>
+      </div>
+      <div class="cmd-row" data-tags="output format json text headless">
+        <kbd class="green">claude -p "task" --output-format json</kbd>
+        <span class="cmd-desc">Get <em>structured JSON</em> output</span>
+      </div>
+    </div>
+    <div class="card full">
+      <div class="card-label">Task Patterns</div>
+      <div class="cmd-row" data-tags="plan mode design architect strategy">
+        <kbd class="green">/plan</kbd>
+        <span class="cmd-desc">Enter <em>plan mode</em> &mdash; design before coding</span>
+      </div>
+      <div class="cmd-row" data-tags="compact compress context window token save">
+        <kbd class="green">/compact [focus]</kbd>
+        <span class="cmd-desc">Compress context with <em>optional focus area</em></span>
+      </div>
+      <div class="cmd-row" data-tags="fast mode speed quick toggle">
+        <kbd class="green">/fast</kbd>
+        <span class="cmd-desc">Toggle <em>fast mode</em> &mdash; faster output, same model</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 8: Combined Workflows -->
+<!-- ============================================================ -->
+<div class="section" data-layer="both">
+  <div class="section-header">
+    <div class="section-dot dot-orange"></div>
+    <span class="section-title orange">COMBINED WORKFLOWS</span>
+    <span class="section-desc">// tmux + claude patterns for multi-project dev</span>
+  </div>
+  <div class="cards">
+    <div class="card full">
+      <div class="card-label">Multi-Agent Setup</div>
+      <div class="terminal-viz">
+        <div class="terminal-bar">
+          <div class="tdot tdot-r"></div>
+          <div class="tdot tdot-y"></div>
+          <div class="tdot tdot-g"></div>
+        </div>
+        <div class="term-grid">
+          <div class="term-pane">
+            <div class="term-label">pane 0 &middot; claude &middot; feature-auth</div>
+            <div class="term-line">&check; Created AuthMiddleware</div>
+            <div class="term-active">Writing tests... <span class="term-cursor"></span></div>
+          </div>
+          <div class="term-pane">
+            <div class="term-label">pane 1 &middot; claude &middot; bugfix-api</div>
+            <div class="term-line">&check; Found root cause</div>
+            <div class="term-active">Applying fix... <span class="term-cursor"></span></div>
+          </div>
+          <div class="term-pane wide">
+            <div class="term-label">pane 2 &middot; shell &middot; monitoring</div>
+            <div class="term-active">$ git log --oneline -5 <span class="term-cursor"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card full">
+      <div class="card-label">Recipe: Parallel Claude Sessions</div>
+<pre class="code-block">
+<span class="syn-comment"># 1. Create a tmux session for the project</span>
+<span class="syn-command">tmux new -s</span> <span class="syn-string">myproject</span> <span class="syn-flag">-c</span> ~/code/myproject
+
+<span class="syn-comment"># 2. Split into panes for parallel Claude sessions</span>
+<span class="syn-comment">#    prefix % → vertical split, prefix " → horizontal split</span>
+
+<span class="syn-comment"># 3. In pane 0: work on feature</span>
+<span class="syn-command">claude</span>    <span class="syn-comment"># → "implement auth middleware"</span>
+
+<span class="syn-comment"># 4. In pane 1 (prefix %): work on bugfix</span>
+<span class="syn-command">claude</span>    <span class="syn-comment"># → "fix the race condition in user service"</span>
+
+<span class="syn-comment"># 5. In pane 2 (prefix "): keep a shell for git, tests</span>
+<span class="syn-command">npm test</span>
+
+<span class="syn-comment"># 6. Zoom into a pane to focus: prefix z</span>
+<span class="syn-comment"># 7. Switch panes: prefix o  or  prefix ←/→</span>
+</pre>
+    </div>
+    <div class="card">
+      <div class="card-label">Cross-Project Pattern</div>
+      <div class="cmd-row" data-tags="project switch jump session tmux claude">
+        <kbd class="orange">prefix s &rarr; select project</kbd>
+        <span class="cmd-desc"><em>Jump between projects</em> via session picker</span>
+      </div>
+      <div class="cmd-row" data-tags="window switch concern code test claude">
+        <kbd class="orange">prefix 0/1/2</kbd>
+        <span class="cmd-desc">Switch <em>concern</em> &mdash; editor / claude / shell</span>
+      </div>
+      <div class="cmd-row" data-tags="detach background leave switch project">
+        <kbd class="orange">prefix d &rarr; tmux a -t other</kbd>
+        <span class="cmd-desc"><em>Detach &amp; switch</em> &mdash; Claude keeps running</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Tips</div>
+      <div class="callout callout-green">
+        <span class="callout-icon">&#x1f4a1;</span>
+        <span>Use <code>prefix z</code> to zoom into one Claude pane for detailed reading, <code>prefix z</code> again to unzoom.</span>
+      </div>
+      <div class="callout callout-orange">
+        <span class="callout-icon">&#x26a0;</span>
+        <span>Each Claude pane is independent &mdash; they don't share context. Use <code>/compact</code> to save tokens in long sessions.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 9: Copy Mode & Scrollback -->
+<!-- ============================================================ -->
+<div class="section" data-layer="tmux">
+  <div class="section-header">
+    <div class="section-dot dot-purple"></div>
+    <span class="section-title purple">TMUX &mdash; COPY MODE &amp; SCROLLBACK</span>
+    <span class="section-desc">// searching output, copying text</span>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Enter &amp; Navigate</div>
+      <div class="cmd-row" data-tags="copy mode scroll enter browse">
+        <kbd class="purple">prefix [</kbd>
+        <span class="cmd-desc">Enter <em>copy mode</em> &mdash; scroll with arrows/PgUp</span>
+      </div>
+      <div class="cmd-row" data-tags="exit copy mode quit leave">
+        <kbd class="purple">q</kbd>
+        <span class="cmd-desc"><em>Exit</em> copy mode</span>
+      </div>
+      <div class="cmd-row" data-tags="search up backward find text output">
+        <kbd class="purple">?</kbd>
+        <span class="cmd-desc"><em>Search backward</em> through output</span>
+      </div>
+      <div class="cmd-row" data-tags="search down forward find text output">
+        <kbd class="purple">/</kbd>
+        <span class="cmd-desc"><em>Search forward</em> through output</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Select &amp; Copy</div>
+      <div class="cmd-row" data-tags="select start mark begin highlight copy">
+        <kbd class="purple">Space</kbd>
+        <span class="cmd-desc"><em>Start selection</em> (in copy mode)</span>
+      </div>
+      <div class="cmd-row" data-tags="copy yank buffer selection text">
+        <kbd class="purple">Enter</kbd>
+        <span class="cmd-desc"><em>Copy selection</em> to tmux buffer</span>
+      </div>
+      <div class="cmd-row" data-tags="paste buffer insert text">
+        <kbd class="purple">prefix ]</kbd>
+        <span class="cmd-desc"><em>Paste</em> from tmux buffer</span>
+      </div>
+      <div class="cmd-row" data-tags="scrollback buffer size history increase">
+        <kbd class="orange">set -g history-limit 50000</kbd>
+        <span class="cmd-desc">Increase <em>scrollback buffer</em> in .tmux.conf</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- .wrap -->
+
+<script>
+const searchInput = document.getElementById('search');
+const countEl = document.getElementById('search-count');
+
+function doSearch() {
+  const q = searchInput.value.trim().toLowerCase();
+  let total = 0;
+
+  document.querySelectorAll('.highlight-match').forEach(el => {
+    const parent = el.parentNode;
+    parent.replaceChild(document.createTextNode(el.textContent), el);
+    parent.normalize();
+  });
+
+  document.querySelectorAll('.cmd-row').forEach(row => {
+    if (!q) { row.classList.remove('hidden'); total++; return; }
+    const tags = (row.dataset.tags || '').toLowerCase();
+    const text = row.textContent.toLowerCase();
+    if (tags.includes(q) || text.includes(q)) {
+      row.classList.remove('hidden');
+      total++;
+      highlightIn(row.querySelector('.cmd-desc'), q);
+    } else {
+      row.classList.add('hidden');
+    }
+  });
+
+  countEl.textContent = q ? total + ' match' + (total !== 1 ? 'es' : '') : '';
+}
+
+function highlightIn(el, q) {
+  if (!el || !q) return;
+  const text = el.textContent;
+  const idx = text.toLowerCase().indexOf(q);
+  if (idx === -1) return;
+  el.innerHTML = '';
+  el.appendChild(document.createTextNode(text.slice(0, idx)));
+  const span = document.createElement('span');
+  span.className = 'highlight-match';
+  span.textContent = text.slice(idx, idx + q.length);
+  el.appendChild(span);
+  el.appendChild(document.createTextNode(text.slice(idx + q.length)));
+}
+
+searchInput.addEventListener('input', doSearch);
+
+// Tab filtering
+let activeFilter = 'all';
+const tabs = document.querySelectorAll('.tab');
+const sections = document.querySelectorAll('.section');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const filter = tab.dataset.filter;
+    activeFilter = filter;
+
+    // Update active tab style
+    tabs.forEach(t => t.className = 'tab');
+    if (filter === 'all')    tab.className = 'tab active-orange';
+    if (filter === 'tmux')   tab.className = 'tab active-purple';
+    if (filter === 'claude') tab.className = 'tab active-green';
+    if (filter === 'both')   tab.className = 'tab active-orange';
+
+    // Show/hide sections
+    sections.forEach(s => {
+      if (filter === 'all' || s.dataset.layer === filter) {
+        s.classList.remove('section-hidden');
+      } else {
+        s.classList.add('section-hidden');
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
