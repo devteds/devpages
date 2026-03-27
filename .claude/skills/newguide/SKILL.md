@@ -13,6 +13,23 @@ If the user provided a topic as `$ARGUMENTS`, use it as the starting point for S
 
 ---
 
+## Step 0 — Sync Repository
+
+Before anything else, pull the latest code:
+
+```bash
+git pull --rebase origin main
+```
+
+If this fails due to unstaged changes, stash first:
+```bash
+git stash && git pull --rebase origin main && git stash pop
+```
+
+Report: `Repository synced with origin/main.`
+
+---
+
 ## Step 1 — Gather Intent
 
 Respond with:
@@ -75,13 +92,38 @@ Wait for confirmation. If the user requests changes, revise and re-present. Loop
 
 ---
 
-## Step 3 — Generate HTML
+## Step 3 — Research
 
-Once the plan is confirmed:
+Once the plan is confirmed, research the topic to ensure accuracy:
+
+1. Use web search to find the **official documentation** for the tools/technologies in the guide
+2. Fetch key reference pages (man pages, official cheatsheets, CLI help docs) to verify:
+   - Command syntax and flags are current
+   - Keyboard shortcuts are accurate
+   - Any recent changes or deprecations
+3. Cross-reference your knowledge with the fetched docs
+
+Tell the user: `Researching latest docs for [topic]...`
+
+Report what sources were consulted:
+```
+Sources checked:
+  • [source 1 — url or description]
+  • [source 2]
+  ...
+```
+
+If a tool's docs are unavailable, note it and proceed with best available knowledge.
+
+---
+
+## Step 4 — Generate HTML
+
+After research is complete:
 
 1. Read `.claude/docs/STYLE_GUIDE.md` fully
 2. Read `.claude/docs/COMPONENTS.md` fully
-3. Generate the complete guide HTML using the confirmed plan
+3. Generate the complete guide HTML using the confirmed plan and researched content
 
 Tell the user: `Reading style guide and components... generating guide HTML.`
 
@@ -125,7 +167,7 @@ Ready to preview.
 
 ---
 
-## Step 4 — Preview
+## Step 5 — Preview
 
 Automatically open preview:
 
@@ -152,7 +194,7 @@ Review the guide in your browser.
 
 ---
 
-## Step 5 — Iterate (if needed)
+## Step 6 — Iterate (if needed)
 
 If the user requests changes:
 1. Understand the requested changes
@@ -165,7 +207,7 @@ Loop until the user is satisfied.
 
 ---
 
-## Step 6 — Hand off to Publish
+## Step 7 — Hand off to Publish
 
 When the user approves:
 ```

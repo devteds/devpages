@@ -57,3 +57,11 @@ DevPages helps you create, preview, and publish beautiful standalone HTML guide 
 - Node.js >= 16 (for build-index.js)
 - Git with push access to this repo
 - Claude Code CLI
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Copyright
+
+© 2026 [Devteds](https://devteds.com). All rights reserved.
