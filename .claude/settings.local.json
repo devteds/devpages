@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(git init:*)",
+      "Bash(git checkout:*)",
+      "Bash(unzip -l /Users/shettigarc/work/devteds-git/devpages/devguides-requirements.zip)",
+      "Bash(unzip -l /Users/shettigarc/work/devteds-git/devpages/files.zip)",
+      "Bash(git remote:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
