@@ -1,5 +1,7 @@
 # DevPages
 
+**Live site:** [devteds.github.io/devpages](https://devteds.github.io/devpages/)
+
 A Git-backed developer knowledge publishing system powered by Claude Code.
 
 DevPages helps you create, preview, and publish beautiful standalone HTML guide artifacts to GitHub Pages. Each guide is a single self-contained HTML file — no build tools, no frameworks, no dependencies.
