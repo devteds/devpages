@@ -250,6 +250,7 @@ Every guide header follows this pattern:
   </div>
   <h1><span class="purple">tmux</span> <span class="muted">×</span> <span class="green">Claude</span><br>Cheatsheet</h1>
   <p class="byline">// multi-project · multi-session · multi-agent</p>
+  <p class="author">by <a href="[author url]" target="_blank">[Author Name]</a></p>
 </header>
 ```
 
@@ -287,6 +288,19 @@ header {
   color: var(--muted);
   font-family: var(--mono);
 }
+
+.author {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  letter-spacing: 0.03em;
+}
+.author a {
+  color: var(--accent-green);
+  text-decoration: none;
+}
+.author a:hover { text-decoration: underline; }
 
 h1 {
   font-family: var(--display);
@@ -392,3 +406,32 @@ Search behavior rules:
 - Highlights matched text in results
 - Shows "No results" message when nothing matches
 - Does not filter across sections that are hidden by tab/filter
+
+---
+
+## Footer Pattern
+
+Every guide must include a footer with the Devteds attribution:
+
+```html
+<footer>
+  <p>DevGuides by <a href="https://devteds.com" target="_blank">Devteds</a></p>
+</footer>
+```
+
+```css
+footer {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+footer a {
+  color: var(--accent-green);
+  text-decoration: none;
+}
+footer a:hover { text-decoration: underline; }
+```

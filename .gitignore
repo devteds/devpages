@@ -19,3 +19,6 @@ desktop.ini
 
 # Local/temp
 tmp/
+
+# Author config (personal)
+.author.json

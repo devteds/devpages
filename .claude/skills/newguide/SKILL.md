@@ -142,6 +142,15 @@ HTML rules:
 - Must render correctly via file:// and GitHub Pages
 - NEVER copy from a previous guide — always generate fresh from the spec
 
+For the author, read `.author.json` from the project root:
+```bash
+cat .author.json
+```
+This file contains `name` (required), and optionally `url` and `email`.
+- Use `name` for the meta.json `author` field and the HTML author display
+- If `url` is present, make the author name a clickable link (opens in new tab)
+- If `.author.json` does not exist, fall back to `git config user.name`
+
 Also write `guides/[slug]/meta.json`:
 ```json
 {
@@ -152,7 +161,7 @@ Also write `guides/[slug]/meta.json`:
   "category": "string — from defined categories",
   "created": "YYYY-MM-DD",
   "updated": "YYYY-MM-DD",
-  "author": "string"
+  "author": "string — from git config user.name"
 }
 ```
 
