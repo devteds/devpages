@@ -141,6 +141,8 @@ HTML rules:
 - Include working search if guide has more than 15 items
 - Must render correctly via file:// and GitHub Pages
 - NEVER copy from a previous guide — always generate fresh from the spec
+- Include all SEO tags as specified in STYLE_GUIDE.md (robots, canonical, Open Graph, Twitter Card, JSON-LD)
+- Include a footer with Devteds attribution and GitHub link as specified in STYLE_GUIDE.md
 
 For the author, read `.author.json` from the project root:
 ```bash

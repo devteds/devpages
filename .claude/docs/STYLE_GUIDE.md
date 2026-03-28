@@ -411,11 +411,11 @@ Search behavior rules:
 
 ## Footer Pattern
 
-Every guide must include a footer with the Devteds attribution:
+Every guide must include a footer with the Devteds attribution and GitHub link:
 
 ```html
 <footer>
-  <p>DevGuides by <a href="https://devteds.com" target="_blank">Devteds</a></p>
+  <p>DevGuides by <a href="https://devteds.com" target="_blank">Devteds</a> &middot; <a href="https://github.com/devteds/devpages" target="_blank">GitHub</a></p>
 </footer>
 ```
 
@@ -435,3 +435,69 @@ footer a {
 }
 footer a:hover { text-decoration: underline; }
 ```
+
+---
+
+## SEO Requirements
+
+Every guide must include the following in `<head>` for search engine and social media optimization.
+
+### Required Meta Tags
+
+```html
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://devteds.github.io/devpages/guides/[slug]/" />
+```
+
+### Open Graph Tags
+
+```html
+<meta property="og:type" content="article" />
+<meta property="og:title" content="[Guide Title]" />
+<meta property="og:description" content="[Guide description from meta.json]" />
+<meta property="og:url" content="https://devteds.github.io/devpages/guides/[slug]/" />
+<meta property="og:site_name" content="DevGuides by Devteds" />
+<meta property="article:published_time" content="[YYYY-MM-DD]" />
+<meta property="article:author" content="[Author Name]" />
+```
+
+### Twitter Card Tags
+
+```html
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="[Guide Title]" />
+<meta name="twitter:description" content="[Guide description from meta.json]" />
+```
+
+### JSON-LD Structured Data
+
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "[Guide Title]",
+  "description": "[Guide description]",
+  "author": {
+    "@type": "Person",
+    "name": "[Author Name]",
+    "url": "[Author URL if available]"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Devteds",
+    "url": "https://devteds.com"
+  },
+  "datePublished": "[YYYY-MM-DD]",
+  "dateModified": "[YYYY-MM-DD]",
+  "url": "https://devteds.github.io/devpages/guides/[slug]/",
+  "keywords": ["tag1", "tag2"],
+  "articleSection": "[category]"
+}
+</script>
+```
+
+### Base URL
+
+The GitHub Pages base URL is: `https://devteds.github.io/devpages/`
+All canonical and og:url values must use this base.

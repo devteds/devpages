@@ -101,8 +101,39 @@ function generateIndexHtml(guides) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="DevPages — A developer knowledge publishing hub." />
-  <title>DevPages</title>
+  <meta name="description" content="DevGuides — Developer knowledge guides published by Devteds. Cheatsheets, tutorials, and references for modern dev tools." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://devteds.github.io/devpages/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="DevGuides by Devteds" />
+  <meta property="og:description" content="Developer knowledge guides — cheatsheets, tutorials, and references for modern dev tools." />
+  <meta property="og:url" content="https://devteds.github.io/devpages/" />
+  <meta property="og:site_name" content="DevGuides by Devteds" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="DevGuides by Devteds" />
+  <meta name="twitter:description" content="Developer knowledge guides — cheatsheets, tutorials, and references for modern dev tools." />
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "DevGuides",
+    "description": "Developer knowledge guides published by Devteds",
+    "url": "https://devteds.github.io/devpages/",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Devteds",
+      "url": "https://devteds.com"
+    }
+  }
+  </script>
+
+  <title>DevGuides by Devteds</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -371,7 +402,7 @@ ${guides.length > 0 ? guideCardsHtml : emptyStateHtml}
     </div>
 
     <footer>
-      DevGuides by <a href="https://devteds.com" target="_blank">Devteds</a>
+      DevGuides by <a href="https://devteds.com" target="_blank">Devteds</a> &middot; <a href="https://github.com/devteds/devpages" target="_blank">GitHub</a>
     </footer>
   </div>
 
